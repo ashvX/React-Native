@@ -1,6 +1,7 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, {Component} from 'react';
+import * as React from 'react';
 import {StyleSheet, View, TextInput, Button, Alert, Text} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 const styles = StyleSheet.create({
   bigBlue: {
@@ -22,48 +23,45 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class LotsOfStyles extends Component {
-  onPressButton() {
-    Alert.alert('You click button');
-  }
+function LoginScreen({navigation}) {
+  return (
+    <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'center'}}>
+      <View style={{padding:10}}>
+        <TextInput style={{backgroundColor: 'black', fontSize: 20, padding:10}} />
+        <TextInput style={{backgroundColor: 'black', fontSize: 20}} />
+      </View>
 
-  render() {
-    return (
-      <View style={{padding: 10}}>
-        <View style={({}, styles.powderBlue)}>
-          <TextInput
-            style={{
-              height: 40,
-              backgroundColor: 'azure',
-              fontSize: 20,
-              textAlign: 'center',
-            }}
-            placeholder="Email / Username / Phone Number"
-          />
-        </View>
-
-        <View style={({}, styles.powderBlue)}>
-          <TextInput
-            style={{
-              height: 40,
-              backgroundColor: 'azure',
-              fontSize: 20,
-              textAlign: 'center',
-            }}
-            placeholder="Password"
-            secureTextEntry={true}
-          />
-        </View>
-        <Text style={styles.bigBlue}>Forgot the password? </Text>
+      <View style={(styles.powderBlue)}>
         <Button
-          onPress={this.onPressButton}
-          title="Button"
-          style={{
-            textAlign: 'center',
-            fontSize: 20,
-          }}
+          style={{backgroundColor: 'red'}}
+          title="Login Button"
+          onPress={() => navigation.navigate('Details')}
         />
       </View>
-    );
-  }
+    </View>
+  );
 }
+
+function DetailsScreen({navigation}) {
+  return (
+    <TextInput
+      style={{ height:40, backgroundColor:'azure', fontSize:20 }}
+      placeholder="Input"
+    />
+  );
+}
+
+const Stack = createStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+export default App;
