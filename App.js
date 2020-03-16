@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 const styles = StyleSheet.create({
-  bigBlue: {
+  bigBlack: {
     color: 'black',
     fontWeight: 'normal',
     fontSize: 10,
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   red: {
     color: 'red',
   },
-  powderBlue: {
+  powderBlack: {
     flex: -1,
     marginLeft: 5,
     marginRight: 5,
@@ -26,28 +26,49 @@ const styles = StyleSheet.create({
 function LoginScreen({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'center'}}>
-      <View style={{padding:10}}>
-        <TextInput style={{backgroundColor: 'black', fontSize: 20, padding:10}} />
+      <View style={{padding: 10}}>
+        <TextInput
+          style={{backgroundColor: 'black', fontSize: 20, padding: 10}}
+        />
         <TextInput style={{backgroundColor: 'black', fontSize: 20}} />
       </View>
 
-      <View style={(styles.powderBlue)}>
+      <View style={styles.p}>
         <Button
           style={{backgroundColor: 'red'}}
           title="Login Button"
-          onPress={() => navigation.navigate('Details')}
+          onPress={() =>
+            navigation.navigate('Details', {
+              itemId: 86,
+              otherParam: 'anything you want here',
+            })
+          }
         />
       </View>
     </View>
   );
 }
 
-function DetailsScreen({navigation}) {
+function DetailsScreen({ route, navigation }) {
+  /* 2. Get the param */
+  const {itemId} = route.params;
+  const {otherParam} = route.params;
   return (
-    <TextInput
-      style={{ height:40, backgroundColor:'azure', fontSize:20 }}
-      placeholder="Input"
-    />
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      <Text>itemId: {JSON.stringify(itemId)}</Text>
+      <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+      <Button
+        title="Go to Details... again"
+        onPress={() =>
+          navigation.push('Details', {
+            itemId: Math.floor(Math.random() * 100),
+          })
+        }
+      />
+      <Button title="Go to Login Screen" onPress={() => navigation.navigate('Login')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
   );
 }
 
