@@ -23,7 +23,13 @@ const styles = StyleSheet.create({
   },
 });
 
-function LoginScreen({navigation}) {
+function LoginScreen({navigation, route}) {
+  React.useEffect(() => {
+    if (route.params?.post) {
+      // Post updated, do something with `route.params.post`
+      // For example, send the post to the server
+    }
+  }, [route.params?.post]);
   return (
     <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'center'}}>
       <View style={{padding: 10}}>
@@ -33,7 +39,7 @@ function LoginScreen({navigation}) {
         <TextInput style={{backgroundColor: 'black', fontSize: 20}} />
       </View>
 
-      <View style={styles.p}>
+      <View style={styles.powderBlack}>
         <Button
           style={{backgroundColor: 'red'}}
           title="Login Button"
@@ -45,16 +51,24 @@ function LoginScreen({navigation}) {
           }
         />
       </View>
+
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Button
+          title="Create post"
+          onPress={() => navigation.navigate('CreatePost')}
+        />
+        <Text style={{margin: 10}}>Post: {route.params?.post}</Text>
+      </View>
     </View>
   );
 }
 
-function DetailsScreen({ route, navigation }) {
+function DetailsScreen({route, navigation}) {
   /* 2. Get the param */
   const {itemId} = route.params;
   const {otherParam} = route.params;
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Details Screen</Text>
       <Text>itemId: {JSON.stringify(itemId)}</Text>
       <Text>otherParam: {JSON.stringify(otherParam)}</Text>
@@ -66,23 +80,52 @@ function DetailsScreen({ route, navigation }) {
           })
         }
       />
-      <Button title="Go to Login Screen" onPress={() => navigation.navigate('Login')} />
+      <Button
+        title="Go to Login Screen"
+        onPress={
+          ({justifyContent: 'center'}, () => navigation.navigate('Login'))
+        }
+      />
       <Button title="Go back" onPress={() => navigation.goBack()} />
     </View>
   );
 }
 
+function CreatePostScreen({navigation, route}) {
+  const [postText, setPostText] = React.useState('');
+
+  return (
+    <>
+      <TextInput
+        multiline
+        placeholder="What's on your mind?"
+        style={{height: 200, padding: 10, backgroundColor: 'white'}}
+        value={postText}
+        onChangeText={setPostText}
+      />
+      <Button
+        title="Done"
+        onPress={() => {
+          // Pass params back to home screen
+          navigation.navigate('Login', {post: postText});
+        }}
+      />
+    </>
+  );
+}
+
 const Stack = createStackNavigator();
 
-function App() {
+export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="CreatePost" component={CreatePostScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-export default App;
+//export default App;
