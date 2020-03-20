@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+
 const Stack = createStackNavigator();
 
 const styles = StyleSheet.create({
@@ -40,7 +41,7 @@ function LoginScreen({navigation, route}) {
     }
   }, [route.params]);
   return (
-    <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'center'}}>
+    <View style={{flex: 3, alignItems: 'stretch', justifyContent: 'center'}}>
       <StatusBar animated backgroundColor="blue" />
       <View style={{padding: 10}}>
         <TextInput
@@ -71,24 +72,8 @@ function DetailsScreen({route, navigation}) {
   const {otherParam} = route.params;
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Details Screen</Text>
       <Text>itemId: {JSON.stringify(itemId)}</Text>
       <Text>otherParam: {JSON.stringify(otherParam)}</Text>
-      <Button
-        title="Go to Details... again"
-        onPress={() =>
-          navigation.push('Details', {
-            itemId: Math.floor(Math.random() * 100),
-          })
-        }
-      />
-      <Button
-        title="Go to Login Screen"
-        onPress={
-          ({justifyContent: 'center'}, () => navigation.navigate('Login'))
-        }
-      />
-      <Button title="Go back" onPress={() => navigation.goBack()} />
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Button
           title="Create post"
@@ -96,6 +81,25 @@ function DetailsScreen({route, navigation}) {
           onPress={() => navigation.navigate('CreatePost')}
         />
         <Text style={{margin: 10}}>Post: {route.params?.post}</Text>
+      </View>
+      <View style={{flexDirection: 'row'}}>
+        <Button
+          title="Go to Details"
+          color="red"
+          onPress={() =>
+            navigation.push('Details', {
+              itemId: Math.floor(Math.random() * 100),
+            })
+          }
+        />
+        <Button
+        color="yellow"
+          title="Go to Login Screen"
+          onPress={
+            ({justifyContent: 'center'}, () => navigation.navigate('Login'))
+          }
+        />
+        <Button color="green" title="Go back" onPress={() => navigation.goBack()} />
       </View>
     </View>
   );
@@ -109,15 +113,17 @@ function CreatePostScreen({navigation, route}) {
       <TextInput
         multiline
         placeholder="What's on your mind?"
-        style={{height: 200, padding: 10, backgroundColor: 'white'}}
+        style={{height: 100, padding: 10, backgroundColor: 'white'}}
         value={postText}
         onChangeText={setPostText}
       />
       <Button
+        style={{}}
+        color="blue"
         title="Done"
         onPress={() => {
           // Pass params back to home screen
-          navigation.navigate('Login', {post: postText});
+          navigation.navigate('Details', {post: postText});
         }}
       />
     </>
@@ -128,21 +134,21 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen
-          name="Login"
-          component={LoginScreen}
+          name="Details"
+          component={DetailsScreen}
           options={{
             //headerTitle: props => <LogoTitle {...props}/>,
             headerRight: () => (
               <Button
-                onPress={() => alert('this is a button!')}
+                onPress={() => alert('Keep it simple, stupid!')}
                 title="Header button"
                 color="blue"
               />
             ),
           }}
         />
-        <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="CreatePost" component={CreatePostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
