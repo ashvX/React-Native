@@ -3,16 +3,19 @@ import {
   StyleSheet,
   View,
   TextInput,
-  Button,
   Alert,
   Text,
   StatusBar,
 } from 'react-native';
+import {Button, ThemeProvide} from 'react-native-elements';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+//import {Tab} from 'native-base';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 const Stack = createStackNavigator();
-
+const Tab = createBottomTabNavigator();
 const styles = StyleSheet.create({
   bigBlack: {
     color: 'black',
@@ -33,6 +36,48 @@ const styles = StyleSheet.create({
   },
 });
 
+function MyTabs() {
+  return (
+    <Tab.Navigator
+      initialRouteName="Feed"
+      tabBarOptions={{
+        activeTintColor: '#e91e63',
+      }}
+    >
+      <Tab.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          tabBarLabel: 'Login',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={Notifications}
+        options={{
+          tabBarLabel: 'Updates',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="bell" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
 function LoginScreen({navigation, route}) {
   React.useEffect(() => {
     if (route.params?.post) {
@@ -43,6 +88,7 @@ function LoginScreen({navigation, route}) {
   return (
     <View style={{flex: 3, alignItems: 'stretch', justifyContent: 'center'}}>
       <StatusBar animated backgroundColor="blue" />
+
       <View style={{padding: 10}}>
         <TextInput
           style={{backgroundColor: 'black', fontSize: 20, padding: 10}}
@@ -93,13 +139,17 @@ function DetailsScreen({route, navigation}) {
           }
         />
         <Button
-        color="yellow"
+          color="yellow"
           title="Go to Login Screen"
           onPress={
             ({justifyContent: 'center'}, () => navigation.navigate('Login'))
           }
         />
-        <Button color="green" title="Go back" onPress={() => navigation.goBack()} />
+        <Button
+          color="green"
+          title="Go back"
+          onPress={() => navigation.goBack()}
+        />
       </View>
     </View>
   );
@@ -119,7 +169,7 @@ function CreatePostScreen({navigation, route}) {
       />
       <Button
         style={{}}
-        color="blue"
+        color="red"
         title="Done"
         onPress={() => {
           // Pass params back to home screen
@@ -128,6 +178,20 @@ function CreatePostScreen({navigation, route}) {
       />
     </>
   );
+}
+
+function TestScreen({navigation}) {
+  const [count, setCount] = React.useState(0);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button onPress={() => setCount(c => c + 1)} title="Update count" />
+      ),
+    });
+  }, [navigation, setCount]);
+
+  return <Text>Count: {count}</Text>;
 }
 
 export default function App() {
@@ -139,17 +203,17 @@ export default function App() {
           name="Details"
           component={DetailsScreen}
           options={{
-            //headerTitle: props => <LogoTitle {...props}/>,
             headerRight: () => (
               <Button
                 onPress={() => alert('Keep it simple, stupid!')}
                 title="Header button"
-                color="blue"
+                color="red"
               />
             ),
           }}
         />
         <Stack.Screen name="CreatePost" component={CreatePostScreen} />
+        <Stack.Screen name="TestScreen" component={TestScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
